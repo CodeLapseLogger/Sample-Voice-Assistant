@@ -33,7 +33,9 @@ intent('What can I order here',
            'Yeah, you can order coffee and dessert');
 });
 
-// Voice command to capture and respond to user specific coffee order
+// Voice command to capture and respond to user specific coffee order.
+// Using user-defined slot COFFEE to capture user input and give it to
+// Alan AI instance, 'p' to include that input in its voice response 
 intent(`I would like a $(COFFEE ${coffeePattern})`, 
        `one $(COFFEE ${coffeePattern}) (please|)`, 
        `I (want|need) a $(COFFEE ${coffeePattern})`, 
@@ -46,7 +48,10 @@ intent(`I would like a $(COFFEE ${coffeePattern})`,
           'Coming right up'); 
 });
 
-// Voice command to capture and respond to user specific dessert order
+// Voice command to capture and respond to user specific dessert order.
+// Using user-defined slot DESSERT with options composed as pattern, to
+// capture user input which can be embedded in the voice response to make
+// it personalized.
 intent(`(Can I get|) (a|one) $(DESSERT ${dessertPattern}) (please|)`, 
        `I (want|need) (a|one) $(DESSERT ${dessertPattern})`, 
        `I would like a $(DESSERT ${dessertPattern}) (please|)`, p => {
@@ -58,6 +63,7 @@ intent(`(Can I get|) (a|one) $(DESSERT ${dessertPattern}) (please|)`,
 });
 
 // Voice command to capture the name of the user
+// Using pre-defined slot $(NAME)
 intent('My name is $(NAME)', 
        'It(s| is) $(NAME)', p => {
    p.play(`Got it ! Thanks ${p.NAME.value}`, 
@@ -66,6 +72,7 @@ intent('My name is $(NAME)',
 });
 
 // Voice command to capture the address of the user
+// Using pre-defined slot $(LOC)
 intent('My address is $(LOC)', 
        'It(s| is) $(LOC)', p => {
    p.play('Thanks ! Your order will be sent to $(LOC)', 
@@ -75,6 +82,8 @@ intent('My address is $(LOC)',
 });
 
 // Voice command to capture the user comment
+// Using user-defined slot to capture the comment
+// with a regular expression.
 let regExForCommentCapture = '(.+)';
 intent(`My comment is $(NOTE* ${regExForCommentCapture})`, p => {
    p.play(`Thank you ! Your comment is ${p.NOTE.value}`); 
