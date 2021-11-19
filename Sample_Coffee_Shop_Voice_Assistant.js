@@ -33,13 +33,39 @@ intent('What can I order here',
            'Yeah, you can order coffee and dessert');
 });
 
+// Voice command to respond to user request to list out coffee options.
+// Using command: 'hightlight' to communicate with the client (web app),
+// on the appropriate coffee item to be highlighted in the UI, to be in
+// sync with the voice response. Appropriate js code needs to be run on
+// the front-end.
+intent('What (type|kind|) (of|) $(MENUITEMTYPE coffee|dessert)(s|) do you have ?',
+       'What (are|is) my $(MENUITEMTYPE coffee|dessert) option(s|) ?',
+       'What(s| is) on the $(MENUITEMTYPE coffee|dessert) menu ?',
+       'Can you (list|read) out the $(MENUITEMTYPE coffee|dessert) (options|menu) (for me|) ?', p => {
+    
+    // Determine the requested menu item list based on item type requested by the user
+    let requestedMenuItemType = p.MENUITEMTYPE.value;
+    let requestedMenuItemList = (requestedMenuItemType === 'coffee') ? coffee : dessert;
+    
+    // Send back appropriate commands and voice response
+    p.play('We have');
+   requestedMenuItemList.forEach((listEntry) => {
+       // Data sent to client with command to highlight coffee item with given id. 
+       p.play({command: 'highlight', item: `${listEntry.id}`}); 
+       // Voice response to match the highlighted coffee item.
+       p.play(`${listEntry.name}`); 
+       // Notice that p.play() is used for both sending data and voice response.
+   });
+    p.play('What would you like today ?');
+});
+
 // Voice command to capture and respond to user specific coffee order.
 // Using user-defined slot COFFEE to capture user input and give it to
 // Alan AI instance, 'p' to include that input in its voice response 
-intent(`I would like a $(COFFEE ${coffeePattern})`, 
-       `one $(COFFEE ${coffeePattern}) (please|)`, 
-       `I (want|need) a $(COFFEE ${coffeePattern})`, 
-       `(Can I get|) (A|one) cup of $(COFFEE ${coffeePattern}) (please|)`, p => {
+intent(`I would like a $(COFFEE~ ${coffeePattern})`, 
+       `one $(COFFEE~ ${coffeePattern}) (please|)`, 
+       `I (want|need) a $(COFFEE~ ${coffeePattern})`, 
+       `(Can I get|) (A|one) cup of $(COFFEE~ ${coffeePattern}) (please|)`, p => {
    p.play(`Adding a ${p.COFFEE.value} to your order`, 
           'Sure', 
           'Sure thing', 
@@ -52,9 +78,9 @@ intent(`I would like a $(COFFEE ${coffeePattern})`,
 // Using user-defined slot DESSERT with options composed as pattern, to
 // capture user input which can be embedded in the voice response to make
 // it personalized.
-intent(`(Can I get|) (a|one) $(DESSERT ${dessertPattern}) (please|)`, 
-       `I (want|need) (a|one) $(DESSERT ${dessertPattern})`, 
-       `I would like a $(DESSERT ${dessertPattern}) (please|)`, p => {
+intent(`(Can I get|) (a|one) $(DESSERT~ ${dessertPattern}) (please|)`, 
+       `I (want|need) (a|one) $(DESSERT~ ${dessertPattern})`, 
+       `I would like a $(DESSERT~ ${dessertPattern}) (please|)`, p => {
    p.play(`Sure, adding a ${p.DESSERT.value} to your order`, 
           'Sure', 'Sure thing', 
           'ok', 
