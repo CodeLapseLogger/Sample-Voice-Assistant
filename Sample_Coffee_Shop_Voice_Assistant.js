@@ -66,7 +66,11 @@ intent(`I would like a $(COFFEE~ ${coffeePattern})`,
        `one $(COFFEE~ ${coffeePattern}) (please|)`, 
        `I (want|need) a $(COFFEE~ ${coffeePattern})`, 
        `(Can I get|) (A|one) cup of $(COFFEE~ ${coffeePattern}) (please|)`, p => {
-   p.play(`Adding a ${p.COFFEE.value} to your order`, 
+    // Extract the id of matching coffee entry
+    let coffeeEntryId = coffee.find((coffeeEntry) => coffeeEntry.name === p.COFFEE.value).id;
+    // Send back the command+data for syncing UI visual queue with the voice response. 
+    p.play({command: 'addCoffee', item: coffeeEntryId});
+    p.play(`Adding a ${p.COFFEE.value} to your order`, 
           'Sure', 
           'Sure thing', 
           'Ok', 
@@ -81,6 +85,10 @@ intent(`I would like a $(COFFEE~ ${coffeePattern})`,
 intent(`(Can I get|) (a|one) $(DESSERT~ ${dessertPattern}) (please|)`, 
        `I (want|need) (a|one) $(DESSERT~ ${dessertPattern})`, 
        `I would like a $(DESSERT~ ${dessertPattern}) (please|)`, p => {
+    // Extract the id of the matching dessert entry
+    let dessertEntryId = dessert.find((dessertEntry) => dessertEntry.name === p.DESSERT.value).id;
+    //Send back the command+data to sync UI visula queue with voice response.
+    p.play({command: 'addDessert', item: dessertEntryId});
    p.play(`Sure, adding a ${p.DESSERT.value} to your order`, 
           'Sure', 'Sure thing', 
           'ok', 
@@ -113,4 +121,4 @@ intent('My address is $(LOC)',
 let regExForCommentCapture = '(.+)';
 intent(`My comment is $(NOTE* ${regExForCommentCapture})`, p => {
    p.play(`Thank you ! Your comment is ${p.NOTE.value}`); 
-});
+}); 
